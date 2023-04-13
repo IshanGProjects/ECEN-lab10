@@ -1,0 +1,28 @@
+module clock_divider (
+    input wire clk_100MHz,
+    output wire clk_1Hz,
+    output wire [15:0] led
+);
+
+// Counter to divide the clock
+reg [26:0] counter; // A 27-bit wide counter can count up to 134,217,728
+wire counter_max = counter == 100_000_000 - 1; // When the counter reaches this value, it will toggle the output
+
+// Divided clock and LED output
+reg divided_clk;
+
+always @(posedge clk_100MHz) begin
+    if (counter_max) begin
+        counter <= 0;
+        divided_clk <= ~divided_clk; // Toggle the divided clock
+    end
+    else begin
+        counter <= counter + 1;
+    end
+end
+
+assign clk_1Hz = divided_clk;
+assign led[0] = divided_clk;
+assign led[1:15] = 16'h0000; // Keep the other LEDs off
+
+endmodule
