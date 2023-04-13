@@ -5,16 +5,21 @@ module clock_divider (
 );
 
 // Counter to divide the clock
-reg [26:0] counter; // A 27-bit wide counter can count up to 134,217,728
-wire counter_max = counter == 100_000_000 - 1; // When the counter reaches this value, it will toggle the output
+  reg [26:0] counter; // A 27-bit wide counter can count up to 134,217,728 2^27
+wire counter_max = counter == 100000000 - 1; // When the counter reaches this value, it will toggle the output
+wire counter_half = counter == 50000000 - 1; // When the counter reaches this value, it will toggle the half-second output
 
 // Divided clock and LED output
 reg divided_clk;
+reg led_half_sec;
 
 always @(posedge clk_100MHz) begin
     if (counter_max) begin
         counter <= 0;
         divided_clk <= ~divided_clk; // Toggle the divided clock
+    end
+    else if (counter_half) begin
+        led_half_sec <= ~led_half_sec; // Toggle the half-second output
     end
     else begin
         counter <= counter + 1;
@@ -22,7 +27,6 @@ always @(posedge clk_100MHz) begin
 end
 
 assign clk_1Hz = divided_clk;
-assign led[0] = divided_clk;
-assign led[1:15] = 16'h0000; // Keep the other LEDs off
+assign led[0] = led_half_sec;
 
 endmodule
