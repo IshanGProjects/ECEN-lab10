@@ -1,33 +1,45 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 04/13/2023 02:43:42 PM
+// Design Name: 
+// Module Name: clock_divider
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 module clock_divider (
-    input wire mclk // ,
-    output wire clk_1Hz,
-    output wire [15:0] led
+    input mclk,
+    output [15:0] led
 );
 
 // Counter to divide the clock
 //2^26 = 67,108,864
-reg [26:0] counter; // A 27-bit wide counter can count up to 134,217,728 2^27
-wire counter_max = counter == 100000000 - 1; // When the counter reaches the max we can the alter
-wire counter_half = counter == 50000000 - 1; // When the counter reaches this value, it will toggle the half-second mark
+reg [32:0] counter; // A 27-bit wide counter can count up to 134,217,728 2^27
 
 // Divide clock and set LED output
-reg div_clk;
 reg led_half_sec;
 
-always @(posedge clk_100MHz) begin
-    if (counter_max) begin
-        counter <= 0;
-        div_clk <= ~div_clk; // Toggle the div clock
-    end
-    else if (counter_half) begin
-        led_half_sec <= ~led_half_sec; // Toggle half-second output
+always @(posedge mclk) begin
+    if (counter ==  (50_000_000 - 1)) begin
+        counter <=0;
+        led_half_sec = ~led_half_sec; // Toggle half-second output
     end
     else begin
         counter <= counter + 1;
     end
 end
 
-assign clk_1Hz = div_clk;
 assign led[0] = led_half_sec;
 
 endmodule
