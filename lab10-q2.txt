@@ -1,0 +1,31 @@
+module led_counter (
+    input mclk,
+    output [15:0] led
+);
+
+// 1 kHz clock generator
+reg [25:0] clk_divider; // 2^26 = 67,108,864
+wire clk_1kHz;
+
+always @(posedge mclk) begin
+    if (clk_divider ==  (67_108_864/1000) - 1) begin
+        clk_divider <= 0;
+    end
+    else begin
+        clk_divider <= clk_divider + 1;
+    end
+end
+
+assign clk_1kHz = (clk_divider == 0);
+
+// Increment 16-bit counter with 1 kHz clock
+reg [15:0] count;
+
+always @(posedge clk_1kHz) begin
+    count <= count + 1;
+end
+
+// Assign the count to the LEDs
+assign led = count;
+
+endmodule
