@@ -1,3 +1,34 @@
+module clock_divider (
+    input mclk,
+    output reg clk_1kHz,
+    output reg clk_10kHz
+);
+
+// Counter to divide the clock
+reg [15:0] counter;
+
+// Divide clock and set output
+always @(posedge mclk) begin
+    if (counter == (50_000_000 / 1_000) - 1) begin
+        counter <= 0;
+        clk_1kHz <= ~clk_1kHz; // Toggle 1kHz output
+    end
+    else begin
+        counter <= counter + 1;
+    end
+end
+
+// Generate 10kHz clock
+always @(posedge mclk) begin
+    if (counter == (50_000_000 / 10_000) - 1) begin
+        clk_10kHz <= ~clk_10kHz; // Toggle 10kHz output
+    end
+end
+
+endmodule
+
+
+
 module hexEncode(input [3:0] bin, output wire [7:0] hex);
    wire A,B,C,D;
 
@@ -19,7 +50,7 @@ endmodule
 
 module display_4_hex(
     input [15:0] sw,
-    input clk_1kHz,
+    input clk_10kHz,
     output [7:0] D0_seg, D1_seg,
     output [3:0] D0_a, D1_a
 );
@@ -34,7 +65,7 @@ hexEncode h3(sw[15:12], seg3);
 // Use a counter to switch between displays
 reg [3:0] display_counter;
 
-always @(posedge clk_1kHz) begin
+always @(posedge clk_10kHz) begin
     display_counter <= display_counter + 1;
 end
 
