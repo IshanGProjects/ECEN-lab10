@@ -39,8 +39,8 @@ always @(posedge clk_1kHz) begin
 end
 
 // Use ternary operators to select position from display_counter
-assign D1_seg = (display_counter == 2'b00) ? seg0 : (display_counter == 2'b01) ? seg1 : (display_counter == 2'b10) ? seg2 : seg3;
-assign D1_a  = (display_counter == 2'b00) ? 4'b1110 : (display_counter == 2'b01) ? 4'b1101 : (display_counter == 2'b10) ? 4'b1011 : 4'b0111;
+assign D0_seg = (display_counter == 2'b00) ? seg0 : (display_counter == 2'b01) ? seg1 : (display_counter == 2'b10) ? seg2 : seg3;
+assign D0_a  = (display_counter == 2'b00) ? 4'b1110 : (display_counter == 2'b01) ? 4'b1101 : (display_counter == 2'b10) ? 4'b1011 : 4'b0111;
 
 endmodule
 
