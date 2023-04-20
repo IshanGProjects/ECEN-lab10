@@ -17,14 +17,6 @@ module hexEncode(input [3:0] bin, output wire [7:0] hex);
     assign hex[0] = (~A & B & ~C & ~D) | (A & ~B & C & D) | (A & B & ~C & D) | (~A&~B&~C&D);
 endmodule
 
-
-module q3(
-input [15:0] sw,
-input [3:0] btn,
-output [7:0] D0_seg, D1_seg,
-output [3:0] D0_a, D1_a
-endmodule
-
 module display_4_hex(
     input [15:0] sw,
     input clk_1kHz,
