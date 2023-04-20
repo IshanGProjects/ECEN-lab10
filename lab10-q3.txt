@@ -82,25 +82,19 @@ module top(
     output [3:0] D0_a, D1_a
 );
 
-// Generate 1 kHz clock
-reg [25:0] clk_divider;
+// Instantiate clock_divider module
 wire clk_1kHz;
-
-always @(posedge mclk) begin
-    if (clk_divider ==  (67_108_864/1000) - 1) begin
-        clk_divider <= 0;
-    end
-    else begin
-        clk_divider <= clk_divider + 1;
-    end
-end
-
-assign clk_1kHz = (clk_divider == 0);
+wire clk_10kHz;
+clock_divider clk_div(
+    .mclk(mclk),
+    .clk_1kHz(clk_1kHz),
+    .clk_10kHz(clk_10kHz)
+);
 
 // Instantiate display_4_hex module
 display_4_hex disp(
     .sw(sw),
-    .clk_1kHz(clk_1kHz),
+    .clk_10kHz(clk_10kHz),
     .D0_seg(D0_seg),
     .D1_seg(D1_seg),
     .D0_a(D0_a),
